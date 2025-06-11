@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>First Layer G-code Renderer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+      max-width: 600px;
+      margin: 3rem auto;
+      padding: 2rem 2.5rem;
+      background: #f8f9fa;
+      color: #222;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1.5px 4px rgba(0,0,0,0.04);
+    }
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      color: #5a3e85;
+      letter-spacing: 1px;
+    }
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      margin-top: 1.2rem;
+      font-weight: 500;
+    }
+    input[type="file"], select, input[type="color"], input[type="number"] {
+      margin-top: 0.2rem;
+      padding: 0.4rem 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      background: #fff;
+      transition: border 0.2s;
+    }
+    input[type="file"]:focus, select:focus, input[type="color"]:focus, input[type="number"]:focus {
+      border: 1.5px solid #5a3e85;
+      outline: none;
+    }
+    button#renderButton {
+      margin-top: 2rem;
+      padding: 0.7rem 1.5rem;
+      background: linear-gradient(90deg, #5a3e85 60%, #9654cc 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(90,62,133,0.08);
+      transition: background 0.2s, transform 0.1s;
+    }
+    button#renderButton:hover {
+      background: linear-gradient(90deg, #9654cc 60%, #5a3e85 100%);
+      transform: translateY(-2px) scale(1.03);
+    }
+    #downloadLink {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: 0.6rem 1.2rem;
+      background: #ffe64d;
+      color: #5a3e85;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      transition: background 0.2s, color 0.2s;
+    }
+    #downloadLink:hover {
+      background: #fffaad;
+      color: #b03029;
+    }
+    svg, canvas {
+      border: 1px solid #ccc;
+      margin-top: 2rem;
+      display: block;
+      max-width: 100%;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    svg line {
+      stroke-linecap: round;
+    }
+    #output {
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 0.5rem;
+    }
+    td {
+      padding-right: 1rem;
+    }
+    label.color-label {
+      margin-top: 0;
+      font-weight: 400;
+    }
+    input[type="color"] {
+      width: 3rem;
+      height: 2rem;
+      padding: 0;
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <a href="https://cnckitchen.store" target="_blank" style="display:block;margin-bottom:1.5rem;">
+    <img src="header.jpg" alt="Supported by CNCKitchen.STORE" style="width:100%;max-width:100%;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.07);" />
+  </a>
+  <h1>First Layer G-code Renderer</h1>
+
+  <label>
+    Select your G-code File:
+    <input type="file" id="gcodeInput" accept=".gcode" />
+  </label>
+
+  <label>
+    Rendering Line Width (mm):
+    <input type="number" id="lineWidth" value="0.4" step="0.05" min="0.1" />
+  </label>
+
+  <label>
+    Resolution Multiplier:
+    <input type="number" id="resolutionMultiplier" value="10" step="1" min="1" />
+  </label>
+
+  <label>
+    Output Format:
+    <select id="outputFormat">
+      <option value="svg">SVG</option>
+      <option value="png">PNG</option>
+    </select>
+  </label>
+
+  <label>Colors:</label>
+  <table>
+    <tr>
+      <td>
+        <label class="color-label">
+          Perimeter Color:
+          <input type="color" id="colorPerimeter" value="#ffe64d" />
+        </label>
+      </td>
+      <td>
+        <label class="color-label">
+          External Perimeter Color:
+          <input type="color" id="colorExternalPerimeter" value="#ff7d38" />
+        </label>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label class="color-label">
+          Infill Color:
+          <input type="color" id="colorInfill" value="#b03029" />
+        </label>
+      </td>
+      <td>
+        <label class="color-label">
+          Solid Infill Color:
+          <input type="color" id="colorSolidInfill" value="#9654cc" />
+        </label>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label class="color-label">
+          Background Color:
+          <input type="color" id="colorBackground" value="#424444" />
+        </label>
+      </td>
+      <td>
+            <input type="checkbox" id="transparentBackground" checked />
+            Transparent background
+      </td>
+    </tr>
+  </table>
+
+  <button id="renderButton">Render</button>
+  <a id="downloadLink" style="display: none; margin-top: 1rem;">Download Result</a>
+
+  <div id="output"></div>
+
+  <script src="viewer.js"></script>
+</body>
+</html>
