@@ -130,19 +130,20 @@
   </style>
 </head>
 <body>
+  <a href="https://geni.us/FLGCodeGenerator" target="_blank" style="display:block;margin-bottom:1.5rem;">
+    <img src="header.jpg" alt="Supported by CNCKitchen.STORE" style="width:100%;max-width:100%;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.07);" />
+  </a>
+  <h1>First Layer G-code Renderer</h1>
+
   <div style="
-    position: fixed;
-    top: 32px;
-    right: 32px;
-    width: 300px;
-    max-width: 90vw;
-    z-index: 100;
     background:#f3eaff;
     border-left:6px solid #9654cc;
     padding:1rem 1.2rem;
+    margin-bottom:2rem;
     border-radius:8px;
     font-size:1.08rem;
     box-shadow:0 1px 12px rgba(150,84,204,0.13);
+    max-width: 100%;
   ">
     <strong>What does this tool do?</strong><br>
     Upload a G-code file (from PrusaSlicer, BambuStudio, or OrcaSlicer) and get a clean 2D render of the first layer. I built this to create artwork for merch and swag - what will you use it for?<br><br>
@@ -151,11 +152,6 @@
     - Print the infill before the perimeter<br>
     - Set the slicing resolution to 0.001 or lower<br>
   </div>
-
-  <a href="https://geni.us/FLGCodeGenerator" target="_blank" style="display:block;margin-bottom:1.5rem;">
-    <img src="header.jpg" alt="Supported by CNCKitchen.STORE" style="width:100%;max-width:100%;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.07);" />
-  </a>
-  <h1>First Layer G-code Renderer</h1>
 
   <div style="display: flex; gap: 2rem;">
     <div style="flex: 1;">
@@ -227,7 +223,7 @@
         </tr>
       </table>
 
-      <button id="renderButton">Render</button>
+      <button id="renderButton">Render</button>&nbsp; &nbsp; 
       <a id="downloadLink" style="display: none;">Download Result</a>
 
       <div id="output"></div>
