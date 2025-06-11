@@ -42,7 +42,11 @@
       border: 1.5px solid #5a3e85;
       outline: none;
     }
-    button#renderButton {
+    button#renderButton,
+    #downloadLink {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       margin-top: 2rem;
       padding: 0.7rem 1.5rem;
       background: linear-gradient(90deg, #5a3e85 60%, #9654cc 100%);
@@ -53,27 +57,36 @@
       font-weight: 600;
       cursor: pointer;
       box-shadow: 0 2px 8px rgba(90,62,133,0.08);
-      transition: background 0.2s, transform 0.1s;
+      transition: background 0.2s, transform 0.1s, color 0.2s;
+      text-decoration: none;
+      text-align: center;
+      min-width: 170px;
+      height: 48px;
+      line-height: 1.2;
+      vertical-align: middle;
+      appearance: button;
+      -webkit-appearance: button;
+      font-family: inherit;
+      outline: none;
+      border-width: 0;
+      box-sizing: border-box;
+    }
+    #downloadLink {
+      background: linear-gradient(90deg, #ff9800 60%, #ffb347 100%);
+      color: #fff !important;
     }
     button#renderButton:hover {
       background: linear-gradient(90deg, #9654cc 60%, #5a3e85 100%);
+      color: #ffe64d;
       transform: translateY(-2px) scale(1.03);
     }
-    #downloadLink {
-      display: inline-block;
-      margin-top: 1.5rem;
-      padding: 0.6rem 1.2rem;
-      background: #ffe64d;
-      color: #5a3e85;
-      border-radius: 6px;
-      font-weight: 600;
-      text-decoration: none;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-      transition: background 0.2s, color 0.2s;
-    }
     #downloadLink:hover {
-      background: #fffaad;
-      color: #b03029;
+      background: linear-gradient(90deg, #ffb347 60%, #ff9800 100%);
+      color: #fffacd !important;
+      transform: translateY(-2px) scale(1.03);
+    }
+    #downloadLink[style*="display: none"] {
+      display: none !important;
     }
     svg, canvas {
       border: 1px solid #ccc;
@@ -139,7 +152,7 @@
     - Set the slicing resolution to 0.001 or lower<br>
   </div>
 
-  <a href="https://cnckitchen.store" target="_blank" style="display:block;margin-bottom:1.5rem;">
+  <a href="https://geni.us/FLGCodeGenerator" target="_blank" style="display:block;margin-bottom:1.5rem;">
     <img src="header.jpg" alt="Supported by CNCKitchen.STORE" style="width:100%;max-width:100%;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.07);" />
   </a>
   <h1>First Layer G-code Renderer</h1>
@@ -215,7 +228,7 @@
       </table>
 
       <button id="renderButton">Render</button>
-      <a id="downloadLink" style="display: none; margin-top: 1rem;">Download Result</a>
+      <a id="downloadLink" style="display: none;">Download Result</a>
 
       <div id="output"></div>
       <!-- Main form and controls end -->
