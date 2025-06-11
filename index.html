@@ -117,87 +117,110 @@
   </style>
 </head>
 <body>
+  <div style="
+    position: fixed;
+    top: 32px;
+    right: 32px;
+    width: 300px;
+    max-width: 90vw;
+    z-index: 100;
+    background:#f3eaff;
+    border-left:6px solid #9654cc;
+    padding:1rem 1.2rem;
+    border-radius:8px;
+    font-size:1.08rem;
+    box-shadow:0 1px 12px rgba(150,84,204,0.13);
+  ">
+    <strong>What does this tool do?</strong><br>
+    Upload a G-code file (from PrusaSlicer, BambuStudio, or OrcaSlicer) and get a clean 2D render of the first layer. I built this to create artwork for merch and swag - what will you use it for?<br><br>
+    <strong>Tips</strong><br>
+    - Use the CLASSIC perimeter generator<br>
+    - Print the infill before the perimeter<br>
+    - Set the slicing resolution to 0.001 or lower<br>
+  </div>
+
   <a href="https://cnckitchen.store" target="_blank" style="display:block;margin-bottom:1.5rem;">
     <img src="header.jpg" alt="Supported by CNCKitchen.STORE" style="width:100%;max-width:100%;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.07);" />
   </a>
   <h1>First Layer G-code Renderer</h1>
 
-  <div style="background:#f3eaff;border-left:6px solid #9654cc;padding:1rem 1.2rem;margin-bottom:2rem;border-radius:8px;font-size:1.08rem;box-shadow:0 1px 6px rgba(150,84,204,0.07);">
-    <strong>What does this tool do?</strong><br>
-    Upload a G-code file (from PrusaSlicer, BambuStudio, or OrcaSlicer) and get a clean 2D render of the first layer. I built this to create artwork for merch—what will you use it for?
+  <div style="display: flex; gap: 2rem;">
+    <div style="flex: 1;">
+      <!-- Main form and controls start -->
+      <label>
+        Select your G-code File:
+        <input type="file" id="gcodeInput" accept=".gcode" />
+      </label>
+
+      <label>
+        Rendering Line Width (mm):
+        <input type="number" id="lineWidth" value="0.4" step="0.05" min="0.1" />
+      </label>
+
+      <label>
+        Resolution Multiplier:
+        <input type="number" id="resolutionMultiplier" value="10" step="1" min="1" />
+      </label>
+
+      <label>
+        Output Format:
+        <select id="outputFormat">
+          <option value="svg">SVG</option>
+          <option value="png">PNG</option>
+        </select>
+      </label>
+
+      <label>Colors:</label>
+      <table>
+        <tr>
+          <td>
+            <label class="color-label">
+              Perimeter Color:
+              <input type="color" id="colorPerimeter" value="#ffe64d" />
+            </label>
+          </td>
+          <td>
+            <label class="color-label">
+              External Perimeter Color:
+              <input type="color" id="colorExternalPerimeter" value="#ff7d38" />
+            </label>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label class="color-label">
+              Infill Color:
+              <input type="color" id="colorInfill" value="#b03029" />
+            </label>
+          </td>
+          <td>
+            <label class="color-label">
+              Solid Infill Color:
+              <input type="color" id="colorSolidInfill" value="#9654cc" />
+            </label>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label class="color-label">
+              Background Color:
+              <input type="color" id="colorBackground" value="#424444" />
+            </label>
+          </td>
+          <td>
+                <input type="checkbox" id="transparentBackground" checked />
+                Transparent background
+          </td>
+        </tr>
+      </table>
+
+      <button id="renderButton">Render</button>
+      <a id="downloadLink" style="display: none; margin-top: 1rem;">Download Result</a>
+
+      <div id="output"></div>
+      <!-- Main form and controls end -->
+    </div>
   </div>
-
-  <label>
-    Select your G-code File:
-    <input type="file" id="gcodeInput" accept=".gcode" />
-  </label>
-
-  <label>
-    Rendering Line Width (mm):
-    <input type="number" id="lineWidth" value="0.4" step="0.05" min="0.1" />
-  </label>
-
-  <label>
-    Resolution Multiplier:
-    <input type="number" id="resolutionMultiplier" value="10" step="1" min="1" />
-  </label>
-
-  <label>
-    Output Format:
-    <select id="outputFormat">
-      <option value="svg">SVG</option>
-      <option value="png">PNG</option>
-    </select>
-  </label>
-
-  <label>Colors:</label>
-  <table>
-    <tr>
-      <td>
-        <label class="color-label">
-          Perimeter Color:
-          <input type="color" id="colorPerimeter" value="#ffe64d" />
-        </label>
-      </td>
-      <td>
-        <label class="color-label">
-          External Perimeter Color:
-          <input type="color" id="colorExternalPerimeter" value="#ff7d38" />
-        </label>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label class="color-label">
-          Infill Color:
-          <input type="color" id="colorInfill" value="#b03029" />
-        </label>
-      </td>
-      <td>
-        <label class="color-label">
-          Solid Infill Color:
-          <input type="color" id="colorSolidInfill" value="#9654cc" />
-        </label>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label class="color-label">
-          Background Color:
-          <input type="color" id="colorBackground" value="#424444" />
-        </label>
-      </td>
-      <td>
-            <input type="checkbox" id="transparentBackground" checked />
-            Transparent background
-      </td>
-    </tr>
-  </table>
-
-  <button id="renderButton">Render</button>
-  <a id="downloadLink" style="display: none; margin-top: 1rem;">Download Result</a>
-
-  <div id="output"></div>
 
   <script src="viewer.js"></script>
 </body>
