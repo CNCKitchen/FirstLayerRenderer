@@ -80,6 +80,11 @@
       color: #ffe64d;
       transform: translateY(-2px) scale(1.03);
     }
+    #resetSettings:hover {
+      background: linear-gradient(90deg, #999999 60%, #666666 100%);
+      color: #ffe64d;
+      transform: translateY(-2px) scale(1.03);
+    }
     #downloadLink:hover {
       background: linear-gradient(90deg, #ffb347 60%, #ff9800 100%);
       color: #fffacd !important;
@@ -151,6 +156,7 @@
     - Use the CLASSIC perimeter generator<br>
     - Print the infill before the perimeter<br>
     - Set the slicing resolution to 0.001 or lower<br>
+    - Disable binary G-code<br>
   </div>
 
   <div style="display: flex; gap: 2rem;">
@@ -163,7 +169,7 @@
 
       <label>
         Rendering Line Width (mm):
-        <input type="number" id="lineWidth" value="0.4" step="0.05" min="0.1" />
+        <input type="number" id="lineWidth" value="0.3" step="0.05" min="0.1" />
       </label>
 
       <label>
@@ -203,27 +209,42 @@
             </label>
           </td>
           <td>
-            <label class="color-label">
-              Solid Infill Color:
-              <input type="color" id="colorSolidInfill" value="#9654cc" />
-            </label>
+            <div class="setting">
+              <label for="colorSolidInfill">Solid Infill Color:</label>
+              <input type="color" id="colorSolidInfill" value="#9654cc">
+            </div>
           </td>
         </tr>
         <tr>
+          <td>
+            <div class="setting">
+              <label for="themeSelector">Color Theme:</label>
+              <select id="themeSelector">
+                <option value="default">Default Theme</option>
+                <option value="solarFlare">Solar Flare</option>
+                <option value="toxicPunch">Toxic Punch</option>
+                <option value="cyberpunk">Cyberpunk</option>
+                <option value="monochromePop">Monochrome Pop</option>
+              </select>
+            </div>
+          </td>
           <td>
             <label class="color-label">
               Background Color:
               <input type="color" id="colorBackground" value="#424444" />
             </label>
           </td>
+        </tr>
+        <tr>
           <td>
-                <input type="checkbox" id="transparentBackground" checked />
-                Transparent background
+            <input type="checkbox" id="transparentBackground" checked />
+            Transparent background
           </td>
         </tr>
       </table>
 
       <button id="renderButton">Render</button>&nbsp; &nbsp; 
+      <button id="resetSettings" style="display: inline-flex; align-items: center; justify-content: center; margin-top: 2rem; padding: 0.7rem 1.5rem; background: linear-gradient(90deg, #666666 60%, #999999 100%); color: #fff; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: background 0.2s, transform 0.1s, color 0.2s; text-decoration: none; text-align: center; min-width: 170px; height: 48px; line-height: 1.2; vertical-align: middle; appearance: button; -webkit-appearance: button; font-family: inherit; outline: none; border-width: 0; box-sizing: border-box;">Reset Settings</button>&nbsp; &nbsp;
       <a id="downloadLink" style="display: none;">Download Result</a>
 
       <div id="output"></div>

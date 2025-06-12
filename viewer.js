@@ -204,6 +204,128 @@ function svgToPng(svgElement, width, height, callback) {
   img.src = url;
 }
 
+// Default settings
+const DEFAULT_SETTINGS = {
+  lineWidth: '0.4',
+  resolutionMultiplier: '10',
+  outputFormat: 'svg',
+  colorPerimeter: '#ffe64d',
+  colorExternalPerimeter: '#ff7d38',
+  colorInfill: '#b03029',
+  colorSolidInfill: '#9654cc',
+  colorBackground: '#424444',
+  transparentBackground: true,
+  currentTheme: 'default'
+};
+
+// Theme definitions
+const THEMES = {
+  default: {
+    colorPerimeter: '#ffe64d',
+    colorExternalPerimeter: '#ff7d38',
+    colorInfill: '#b03029',
+    colorSolidInfill: '#9654cc',
+    colorBackground: '#ffffff',
+    transparentBackground: true
+  },
+  solarFlare: {
+    colorPerimeter: '#FFFFFF',
+    colorExternalPerimeter: '#FF5500',
+    colorInfill: '#3F00FF',
+    colorSolidInfill: '#3F00FF',
+    colorBackground: '#424444',
+    transparentBackground: false
+  },
+  toxicPunch: {
+    colorPerimeter: '#39FF14',
+    colorExternalPerimeter: '#FFFF00',
+    colorInfill: '#4B0082',
+    colorSolidInfill: '#4B0082',
+    colorBackground: '#424444',
+    transparentBackground: false
+  },
+  cyberpunk: {
+    colorPerimeter: '#FF69B4',
+    colorExternalPerimeter: '#00FFFF',
+    colorInfill: '#DA70D6',
+    colorSolidInfill: '#DA70D6',
+    colorBackground: '#424444',
+    transparentBackground: false
+  },
+  monochromePop: {
+    colorPerimeter: '#D3D3D3',
+    colorExternalPerimeter: '#FFFFFF',
+    colorInfill: '#AAAAAA',
+    colorSolidInfill: '#AAAAAA',
+    colorBackground: '#424444',
+    transparentBackground: false
+  }
+};
+
+// Settings management
+function saveSettings() {
+  const settings = {
+    lineWidth: document.getElementById('lineWidth').value,
+    resolutionMultiplier: document.getElementById('resolutionMultiplier').value,
+    outputFormat: document.getElementById('outputFormat').value,
+    colorPerimeter: document.getElementById('colorPerimeter').value,
+    colorExternalPerimeter: document.getElementById('colorExternalPerimeter').value,
+    colorInfill: document.getElementById('colorInfill').value,
+    colorSolidInfill: document.getElementById('colorSolidInfill').value,
+    colorBackground: document.getElementById('colorBackground').value,
+    transparentBackground: document.getElementById('transparentBackground').checked,
+    currentTheme: document.getElementById('themeSelector').value
+  };
+  localStorage.setItem('firstLayerRendererSettings', JSON.stringify(settings));
+}
+
+function loadSettings() {
+  const savedSettings = localStorage.getItem('firstLayerRendererSettings');
+  if (savedSettings) {
+    const settings = JSON.parse(savedSettings);
+    document.getElementById('lineWidth').value = settings.lineWidth;
+    document.getElementById('resolutionMultiplier').value = settings.resolutionMultiplier;
+    document.getElementById('outputFormat').value = settings.outputFormat;
+    document.getElementById('colorPerimeter').value = settings.colorPerimeter;
+    document.getElementById('colorExternalPerimeter').value = settings.colorExternalPerimeter;
+    document.getElementById('colorInfill').value = settings.colorInfill;
+    document.getElementById('colorSolidInfill').value = settings.colorSolidInfill;
+    document.getElementById('colorBackground').value = settings.colorBackground;
+    document.getElementById('transparentBackground').checked = settings.transparentBackground;
+    document.getElementById('themeSelector').value = settings.currentTheme || 'default';
+  }
+}
+
+function resetSettings() {
+  // Apply default settings
+  document.getElementById('lineWidth').value = DEFAULT_SETTINGS.lineWidth;
+  document.getElementById('resolutionMultiplier').value = DEFAULT_SETTINGS.resolutionMultiplier;
+  document.getElementById('outputFormat').value = DEFAULT_SETTINGS.outputFormat;
+  document.getElementById('colorPerimeter').value = DEFAULT_SETTINGS.colorPerimeter;
+  document.getElementById('colorExternalPerimeter').value = DEFAULT_SETTINGS.colorExternalPerimeter;
+  document.getElementById('colorInfill').value = DEFAULT_SETTINGS.colorInfill;
+  document.getElementById('colorSolidInfill').value = DEFAULT_SETTINGS.colorSolidInfill;
+  document.getElementById('colorBackground').value = DEFAULT_SETTINGS.colorBackground;
+  document.getElementById('transparentBackground').checked = DEFAULT_SETTINGS.transparentBackground;
+  document.getElementById('themeSelector').value = DEFAULT_SETTINGS.currentTheme;
+  
+  // Save the default settings
+  saveSettings();
+}
+
+function applyTheme(themeName) {
+  const theme = THEMES[themeName];
+  if (theme) {
+    document.getElementById('colorPerimeter').value = theme.colorPerimeter;
+    document.getElementById('colorExternalPerimeter').value = theme.colorExternalPerimeter;
+    document.getElementById('colorInfill').value = theme.colorInfill;
+    document.getElementById('colorSolidInfill').value = theme.colorSolidInfill;
+    document.getElementById('colorBackground').value = theme.colorBackground;
+    document.getElementById('transparentBackground').checked = theme.transparentBackground;
+    saveSettings();
+  }
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   const input = document.getElementById('gcodeInput');
   const output = document.getElementById('output');
@@ -211,6 +333,36 @@ window.addEventListener('DOMContentLoaded', () => {
   const downloadLink = document.getElementById('downloadLink');
   const colorBackground = document.getElementById('colorBackground');
   const transparentBackground = document.getElementById('transparentBackground');
+  const themeSelector = document.getElementById('themeSelector');
+
+  // Load saved settings when page loads
+  loadSettings();
+
+  // Add change event listeners to all settings inputs to save when changed
+  const settingsInputs = [
+    'lineWidth',
+    'resolutionMultiplier',
+    'outputFormat',
+    'colorPerimeter',
+    'colorExternalPerimeter',
+    'colorInfill',
+    'colorSolidInfill',
+    'colorBackground',
+    'transparentBackground',
+    'themeSelector'
+  ];
+
+  settingsInputs.forEach(id => {
+    document.getElementById(id).addEventListener('change', () => {
+      if (id === 'themeSelector') {
+        applyTheme(document.getElementById('themeSelector').value);
+      }
+      saveSettings();
+    });
+  });
+
+  // Add reset button event listener
+  document.getElementById('resetSettings').addEventListener('click', resetSettings);
 
   let gcodeText = '';
 
@@ -285,12 +437,12 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     }
   });
-  fetch('default_benchy.gcode')
+  fetch('default_logo.gcode')
     .then(res => res.text())
     .then(text => {
       gcodeText = text;
-      input.dataset.filename = 'default_benchy.gcode';
+      input.dataset.filename = 'default_logo.gcode';
       renderButton.click();
     })
-    .catch(err => console.warn('Could not load default Benchy G-code:', err));
+    .catch(err => console.warn('Could not load default Logo G-code:', err));
 });
