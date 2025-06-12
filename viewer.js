@@ -43,7 +43,7 @@ function parseGCode(gcodeText, targetLayerZ = 0.2, zTolerance = 0.01) {
     'outer wall': 'external perimeter',
     'infill': 'infill',
     'solid infill': 'solid infill',
-    'bottom surface': 'solid infill', 
+    'bottom surface': 'solid infill',
     'gap infill': 'solid infill',
     // fallback
     'unknown': 'unknown'
@@ -255,7 +255,7 @@ window.addEventListener('DOMContentLoaded', () => {
     function getTimestampedName(originalName, ext) {
       const now = new Date();
       const pad = n => n.toString().padStart(2, '0');
-      const date = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}`;
+      const date = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}`;
       const time = `${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
       const base = originalName ? originalName.replace(/\.[^/.]+$/, "") : "output";
       return `${date}_${time}_${base}.${ext}`;
@@ -285,4 +285,12 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     }
   });
+  fetch('default_benchy.gcode')
+    .then(res => res.text())
+    .then(text => {
+      gcodeText = text;
+      input.dataset.filename = 'default_benchy.gcode';
+      renderButton.click();
+    })
+    .catch(err => console.warn('Could not load default Benchy G-code:', err));
 });
