@@ -37,6 +37,7 @@ function parseGCode(gcodeText, targetLayerZ = 0.2, zTolerance = 0.01) {
     'perimeter': 'perimeter',
     'external perimeter': 'external perimeter',
     'infill': 'infill',
+    'internal infill': 'infill',
     'solid infill': 'solid infill',
     // OrcaSlicer
     'inner wall': 'perimeter',
